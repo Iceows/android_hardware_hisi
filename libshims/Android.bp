@@ -1,0 +1,46 @@
+cc_library_shared {
+    name: "libshim_log",
+    srcs: ["libshim_log.cpp"],
+    shared_libs: ["liblog"],
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libshim_hardware",
+    srcs: ["libshim_hardware.cpp"],
+    shared_libs: ["liblog", "libhardware"],
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libshim_ui",
+    srcs: ["libshim_ui.cpp"],
+    shared_libs: ["libui", "libutils"],
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "guivnd",
+    shared_libs: ["libgui_vendor"],
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libshim_hwcam",
+    shared_libs: [
+        "libgui_vendor",
+        "libui",
+        "libshim_ui",
+        "libui_shim",
+        "libtinyxml2_shim"
+    ],
+    vendor: true,
+}
+
+cc_library_shared {
+    name: "libshim_emcom",
+    shared_libs: [
+        "libcutils_shim",
+        "libtinyxml2_shim"
+    ],
+}
