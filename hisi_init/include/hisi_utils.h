@@ -6,4 +6,6 @@
 
 #pragma once
 
-void load_variants();
+#include <string>
+
+void set_property(const std::string& prop, const std::string& value);

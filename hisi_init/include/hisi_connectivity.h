@@ -6,4 +6,4 @@
 
 #pragma once
 
-void load_connectivity_properties();
+void load_hisi_connectivity();

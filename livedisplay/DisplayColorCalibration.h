@@ -28,7 +28,6 @@ using ::android::hardware::hidl_vec;
 using ::android::hardware::Return;
 using ::android::hardware::Void;
 
-
 class DisplayColorCalibration : public IDisplayColorCalibration {
   public:
     bool isSupported();
@@ -37,6 +36,10 @@ class DisplayColorCalibration : public IDisplayColorCalibration {
     Return<int32_t> getMinValue() override;
     Return<void> getCalibration(getCalibration_cb _hidl_cb) override;
     Return<bool> setCalibration(const hidl_vec<int32_t>& rgb) override;
+
+  private:
+    std::vector<int32_t> mCachedColors = {32768, 32768, 32768};
+    std::mutex mCachedColorsMutex;
 };
 
 }  // namespace hisi

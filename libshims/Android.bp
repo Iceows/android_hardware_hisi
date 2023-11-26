@@ -8,20 +8,29 @@ cc_library_shared {
 cc_library_shared {
     name: "libshim_hardware",
     srcs: ["libshim_hardware.cpp"],
-    shared_libs: ["liblog", "libhardware"],
+    shared_libs: [
+        "liblog",
+        "libhardware"
+    ],
     vendor: true,
 }
 
 cc_library_shared {
     name: "libshim_ui",
     srcs: ["libshim_ui.cpp"],
-    shared_libs: ["libui", "libutils"],
+    shared_libs: [
+        "libui",
+        "libutils"
+    ],
     vendor: true,
 }
 
 cc_library_shared {
     name: "guivnd",
-    shared_libs: ["libgui_vendor"],
+    shared_libs: [
+        "libgui_vendor",
+        "libsensor_vendor"
+    ],
     vendor: true,
 }
 
@@ -42,5 +51,15 @@ cc_library_shared {
     shared_libs: [
         "libcutils_shim",
         "libtinyxml2_shim"
+    ],
+}
+
+cc_library_shared {
+    name: "libshim_utils",
+    srcs: ["libshim_utils.cpp"],
+    vendor: true,
+    compile_multilib: "64",
+    shared_libs: [
+        "libutils",
     ],
 }

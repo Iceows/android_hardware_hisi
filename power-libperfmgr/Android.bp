@@ -1,0 +1,33 @@
+soong_namespace {
+    imports: [
+        "hardware/google/pixel",
+        "hardware/google/interfaces",
+    ],
+}
+
+cc_binary {
+    name: "android.hardware.power-service.hisi-libperfmgr",
+    relative_install_path: "hw",
+    init_rc: ["aidl/android.hardware.power-service.hisi-libperfmgr.rc"],
+    vintf_fragments: ["aidl/android.hardware.power-service.hisi.xml"],
+    vendor: true,
+    shared_libs: [
+        "android.hardware.power-V3-ndk",
+        "libbase",
+        "libcutils",
+        "liblog",
+        "libutils",
+        "libbinder_ndk",
+        "libperfmgr",
+        "libprocessgroup",
+        "pixel-power-ext-V1-ndk",
+    ],
+    srcs: [
+        "aidl/service.cpp",
+        "aidl/Power.cpp",
+        "aidl/PowerExt.cpp",
+        "aidl/PowerHintSession.cpp",
+        "aidl/PowerSessionManager.cpp",
+        "aidl/InteractionHandler.cpp",
+    ],
+}
