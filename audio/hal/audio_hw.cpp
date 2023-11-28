@@ -457,9 +457,6 @@ static int adev_create_audio_patch(struct audio_hw_device *dev,
 			// replace hw_module by my current value
 			for (int i = 0; i < num_sources; i++)
 				patch_record->patch.sources[i].ext.mix.hw_module=hw_module;
-			for (int i = 0; i < num_sinks; i++)
-				patch_record->patch.sinks[i].ext.device.hw_module=hw_module;
-						  	
 
 			ALOGD("%s - try create_audio_patch sucess with %d handle", __FUNCTION__, hw_module);
 			status=ctx->hisi_device->create_audio_patch(ctx->hisi_device, 
