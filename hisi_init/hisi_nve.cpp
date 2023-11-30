@@ -16,19 +16,16 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <sstream>
 
+
+// Write MAC Adress
 template <typename T>
 static void set(const std::string& path, const T& value) {
     std::ofstream file(path);
     file << value << std::endl;
 }
 
-std::string parse_mac(std::string mac) {
-    for (auto it = mac.begin() + 2; it != mac.end(); it += 3) {
-        it = mac.insert(it, ':');
-    }
-    return mac;
-}
 
 std::string load_nve_path() {
     // Loop over all the possible paths and use
@@ -66,48 +63,94 @@ std::streampos find_start_offset(std::ifstream& file) {
     return std::streampos(-1);
 }
 
-std::string nve_read(const std::string& name, const std::string& path) {
+bool is_hex(std::string str) {
+    return str.find_first_not_of("0123456789ABCDEF") == std::string::npos;
+}
+
+std::string hex_to_mac(std::string hex) {
+    std::stringstream ss;
+    size_t split = 2;
+
+    ss << hex.substr(0, split);
+
+    for (size_t loc = split; loc < hex.size(); loc += split) {
+        ss << ':' << hex.substr(loc, split);
+    }
+
+    return ss.str();
+}
+
+std::string nve_read(const std::string& mac_name, const std::string& path) {
+    char buf[1]; // TODO: improve
+    unsigned long mac_index = 0;
+
     // The caller is supposed to pass the path to the NVE
     // partition block and the name of the entry to read.
-    nv_item entry;
-    std::ifstream file(path, std::ios::binary);
+    std::ifstream nvme(path, std::ios::binary);
 
     // This shouldn't be required but make sure the path
     // the caller passed is valid and the file can be read.
-    if (!file.is_open()) {
+    if (!nvme.is_open()) {
         // If we can't open the file, return an empty string
         // and let the caller handle the situation.
         LOG(ERROR) << "Unable to open " << path;
         return "";
     }
 
+    LOG(INFO) << "Searching MAC entry for " << mac_name.c_str();
+
     // The next step is to find the start offset of the NVE
     // partition. This is done by searching for the "SWVERSI"
     // string and then going back 4 bytes.
-    std::streampos start_offset = find_start_offset(file);
+    std::streampos start_offset = find_start_offset(nvme);
     if (start_offset == std::streampos(-1)) {
         // If we can't find the start offset, return an empty
         // string and let the caller handle the situation.
         LOG(ERROR) << "Unable to find the start offset of the NVE partition";
         return "";
     }
+    
+    while (!nvme.eof()) {
+        nvme.read(buf, sizeof(buf));
 
-    // Now that we know the start offset, we can seek to it
-    // and start reading the entries.
-    file.seekg(start_offset - static_cast<std::streamoff>(4));
-    while (file.read(reinterpret_cast<char*>(&entry), sizeof(nv_item))) {
-        if (std::memcmp(entry.nv_name, name.c_str(), name.length()) == 0) {
-            // If the entry name starts with "MAC", we need to add
-            // a colon between each byte of the MAC address.
-            return std::string(entry.nv_data, entry.nv_data);
+	if (buf[0] == mac_name[mac_index]) {
+            mac_index++;
+
+            if (mac_index == (strlen(mac_name.c_str()) - 1)) {
+                LOG(INFO) << "Found MAC entry for " << mac_name.c_str();
+                std::string mac;
+
+                for(size_t i = 0; i < MAC_ENTRY_MAX_LEN; i++) {
+                    char mac_buff[1];
+
+                    nvme.read(mac_buff, sizeof(mac_buff));
+
+                    std::string tmp_mac(1, mac_buff[0]);
+
+                    if (is_hex(tmp_mac)) {
+                        mac += tmp_mac;
+                    }
+
+                    if (strlen(mac.c_str()) == MAC_LEN) { // full mac read
+                        nvme.close();
+                        return hex_to_mac(mac);
+                    }
+                }
+
+                LOG(ERROR) << "Found a MAC entry but couldn't fully read MAC!";
+                LOG(ERROR) << "This is probably a bug!";
+            }
+        } else {
+            mac_index = 0;
         }
     }
 
-    // If we reached this point, we couldn't find the entry
-    // the caller was looking for. Return an empty string
-    // and let the caller handle the situation.
+    nvme.close();
+
+    LOG(WARNING) << "MAC don't found";
     return "";
 }
+
 
 int LoadNveProperties() {
     std::string path = load_nve_path();
@@ -120,7 +163,8 @@ int LoadNveProperties() {
         if (std::string mac_value = nve_read(pair.first, path); mac_value.empty()) {
             LOG(WARNING) << "Unable to read " << pair.first << " from NVE partition";
         } else {
-            set(pair.second, parse_mac(mac_value));
+            LOG(INFO) << "MAC found : " << mac_value;
+            set(pair.second, mac_value);
         }
     }
 
