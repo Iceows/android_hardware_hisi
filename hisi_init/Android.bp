@@ -14,6 +14,8 @@ cc_binary {
         "hisi_init.cpp",
         "hisi_nve.cpp"
     ],
+    header_libs: ["libhardware_headers","libutils_headers"],
     shared_libs: ["libbase"],
+    relative_install_path: "hw",
     vendor: true,
 }
