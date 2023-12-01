@@ -90,8 +90,9 @@ static int LoadPhoneProperties() {
         for (const auto& path : kPhonePropPaths) {
             if ((ret = SetPhoneProperties(productId, path)) == 0) {
                 LOG(INFO) << "Successfully loaded phone properties ( " << path << ") for "
-                          << productId;
+                          << productId << " ret =" << ret ;
                 set_property(kPropRilReady, "1");
+                return ret;
             }
         }
     }
