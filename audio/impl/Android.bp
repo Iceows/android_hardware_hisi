@@ -62,7 +62,7 @@ cc_defaults {
 }
 
 cc_library_shared {
-    name: "android.hardware.audio@2.0-impl.hisi",
+    name: "android.hardware.audio@2.0-impl-hisi",
     defaults: ["android.hardware.audio-impl_hisi"],
     shared_libs: [
         "android.hardware.audio@2.0",
@@ -78,8 +78,9 @@ cc_library_shared {
     ],
 }
 
+
 cc_library_shared {
-    name: "android.hardware.audio@4.0-impl.hisi",
+    name: "android.hardware.audio@4.0-impl-hisi",
     defaults: ["android.hardware.audio-impl_hisi"],
 
     shared_libs: [
@@ -97,7 +98,7 @@ cc_library_shared {
 }
 
 cc_library_shared {
-    name: "android.hardware.audio@5.0-impl.hisi",
+    name: "android.hardware.audio@5.0-impl-hisi",
     defaults: ["android.hardware.audio-impl_hisi"],
     shared_libs: [
         "android.hardware.audio@5.0",
@@ -114,7 +115,7 @@ cc_library_shared {
 }
 
 cc_library_shared {
-    name: "android.hardware.audio@6.0-impl.hisi",
+    name: "android.hardware.audio@6.0-impl-hisi",
     defaults: ["android.hardware.audio-impl_hisi"],
     shared_libs: [
         "android.hardware.audio@6.0",
@@ -131,7 +132,7 @@ cc_library_shared {
 }
 
 cc_library_shared {
-    name: "android.hardware.audio@7.0-impl.hisi",
+    name: "android.hardware.audio@7.0-impl-hisi",
     defaults: ["android.hardware.audio-impl_hisi"],
     shared_libs: [
         "android.hardware.audio@7.0",
@@ -150,7 +151,7 @@ cc_library_shared {
 }
 
 cc_library_shared {
-    name: "android.hardware.audio@7.1-impl_hisi",
+    name: "android.hardware.audio@7.1-impl-hisi",
     defaults: ["android.hardware.audio-impl_hisi"],
     shared_libs: [
         "android.hardware.audio@7.0",

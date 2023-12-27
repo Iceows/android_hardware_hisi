@@ -497,6 +497,12 @@ Return<void> Device::getAudioPortImpl(const AudioPort& port, getAudioPort_cb _hi
     HalPort halPort;
     
     ALOGI("%s Enter", __func__);
+    
+    if (halGetter == nullptr) {
+        _hidl_cb(Result::NOT_SUPPORTED, port);
+        return Void();
+    }
+    
     if (status_t status = HidlUtils::audioPortToHal(port, &halPort); status != NO_ERROR) {
         _hidl_cb(analyzeStatus("audioPortToHal", status), port);
         return Void();
