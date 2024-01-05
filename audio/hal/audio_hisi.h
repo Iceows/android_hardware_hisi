@@ -21,50 +21,50 @@ struct hisi_audio_hw_device {
     struct hw_device_t common;
     
     
-      /***** HUAWEI PRA order
-        *(code **)(__arg + 0x1e) = adev_get_supported_devices;
-	*(code **)(__arg + 0x20) = adev_init_check;
-	*(code **)(__arg + 0x22) = adev_set_voice_volume;
-	*(code **)(__arg + 0x24) = adev_set_master_volume;
-	*(code **)(__arg + 0x26) = adev_get_master_volume;  
-	*(code **)(__arg + 0x28) = adev_set_mode;
-	*(code **)(__arg + 0x2a) = adev_set_mic_mute;  
-	*(code **)(__arg + 0x2c) = adev_get_mic_mute;  
-	*(code **)(__arg + 0x2e) = adev_set_parameters;
-	*(code **)(__arg + 0x30) = adev_get_parameters;
-	*(code **)(__arg + 0x32) = adev_get_input_buffer_size;
-	*(code **)(__arg + 0x34) = adev_open_output_stream;
-	*(code **)(__arg + 0x36) = adev_close_output_stream;
-	*(code **)(__arg + 0x38) = adev_open_input_stream;
-	*(code **)(__arg + 0x3a) = adev_close_input_stream;
-	*(code **)(__arg + 0x3c) = adev_dump;
-	*(code **)(__arg + 0x3e) = adev_set_master_mute;
-	*(code **)(__arg + 0x40) = adev_get_master_mute;
-	*(code **)(__arg + 0x42) = adev_create_audio_patch;
-	*(code **)(__arg + 0x44) = adev_release_audio_patch;
-	*(code **)(__arg + 0x46) = adev_get_audio_port;
-	*(code **)(__arg + 0x48) = adev_set_audio_port_config;
-	
-	*(code **)(__arg + 0xae) = dsp_modem_loop;  
-	*(code **)(__arg + 0xb0) = dsp_slimbus_i2s_loop;
-	*(code **)(__arg + 0xb2) = dsp_set_device;
-	*(code **)(__arg + 0xb4) = dsp_set_parameters;
-	*(code **)(__arg + 0xb6) = dsp_get_parameters;
-	*(code **)(__arg + 0xb8) = spk_dev_get_parameters;
-	*(code **)(__arg + 0xba) = dsp_set_mmi_mode;
-	*(code **)(__arg + 0xbc) = adev_set_tty_mode;
+	/***** HUAWEI PRA EMUI8 audio hal V2.0 order
+		*(code **)(__arg + 0x1e) = adev_get_supported_devices;
+		*(code **)(__arg + 0x20) = adev_init_check;
+		*(code **)(__arg + 0x22) = adev_set_voice_volume;
+		*(code **)(__arg + 0x24) = adev_set_master_volume;
+		*(code **)(__arg + 0x26) = adev_get_master_volume;  
+		*(code **)(__arg + 0x28) = adev_set_mode;
+		*(code **)(__arg + 0x2a) = adev_set_mic_mute;  
+		*(code **)(__arg + 0x2c) = adev_get_mic_mute;  
+		*(code **)(__arg + 0x2e) = adev_set_parameters;
+		*(code **)(__arg + 0x30) = adev_get_parameters;
+		*(code **)(__arg + 0x32) = adev_get_input_buffer_size;
+		*(code **)(__arg + 0x34) = adev_open_output_stream;
+		*(code **)(__arg + 0x36) = adev_close_output_stream;
+		*(code **)(__arg + 0x38) = adev_open_input_stream;
+		*(code **)(__arg + 0x3a) = adev_close_input_stream;
+		*(code **)(__arg + 0x3c) = adev_dump;
+		*(code **)(__arg + 0x3e) = adev_set_master_mute;
+		*(code **)(__arg + 0x40) = adev_get_master_mute;
+		*(code **)(__arg + 0x42) = adev_create_audio_patch;
+		*(code **)(__arg + 0x44) = adev_release_audio_patch;
+		*(code **)(__arg + 0x46) = adev_get_audio_port;
+		*(code **)(__arg + 0x48) = adev_set_audio_port_config;
 
-	*(code **)(__arg + 0xca) = dsp_set_ext_headset_hifi_bypass;
-	*(code **)(__arg + 0xcc) = dsp_algo_bypass;
-	*(code **)(__arg + 0xce) = dsp_smartPA_control;
+		*(code **)(__arg + 0xae) = dsp_modem_loop;  
+		*(code **)(__arg + 0xb0) = dsp_slimbus_i2s_loop;
+		*(code **)(__arg + 0xb2) = dsp_set_device;
+		*(code **)(__arg + 0xb4) = dsp_set_parameters;
+		*(code **)(__arg + 0xb6) = dsp_get_parameters;
+		*(code **)(__arg + 0xb8) = spk_dev_get_parameters;
+		*(code **)(__arg + 0xba) = dsp_set_mmi_mode;
+		*(code **)(__arg + 0xbc) = adev_set_tty_mode;
 
-	*(code **)(__arg + 0xd0) = spk_get_R0;
-	*(code **)(__arg + 0xd2) = spk_set_calibration_value;
-	*(code **)(__arg + 0xd4) = spk_get_F0;
-	*(code **)(__arg + 0xd6) = spk_algo_bypass;
-	*(code **)(__arg + 0xd8) = get_output_device;
+		*(code **)(__arg + 0xca) = dsp_set_ext_headset_hifi_bypass;
+		*(code **)(__arg + 0xcc) = dsp_algo_bypass;
+		*(code **)(__arg + 0xce) = dsp_smartPA_control;
 
-	*(code **)(__arg + 200) = dsp_set_voicepp;
+		*(code **)(__arg + 0xd0) = spk_get_R0;
+		*(code **)(__arg + 0xd2) = spk_set_calibration_value;
+		*(code **)(__arg + 0xd4) = spk_get_F0;
+		*(code **)(__arg + 0xd6) = spk_algo_bypass;
+		*(code **)(__arg + 0xd8) = get_output_device;
+
+		*(code **)(__arg + 200) = dsp_set_voicepp;
 
 	*/
 
