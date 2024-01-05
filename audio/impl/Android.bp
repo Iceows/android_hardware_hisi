@@ -78,6 +78,43 @@ cc_library_shared {
     ],
 }
 
+cc_library_shared {
+    name: "android.hardware.audio@4.0-impl-hisi-emui9",
+    defaults: ["android.hardware.audio-impl_hisi"],
+
+    shared_libs: [
+        "android.hardware.audio@4.0",
+        "android.hardware.audio@4.0-util",
+        "android.hardware.audio.common@4.0",
+        "android.hardware.audio.common@4.0-util",
+        "libcutils",
+    ],
+    cflags: [
+        "-DMAJOR_VERSION=4",
+        "-DMINOR_VERSION=0",
+        "-DEMUI_VERSION=9",
+        "-include common/all-versions/VersionMacro.h",
+    ],
+}
+
+cc_library_shared {
+    name: "android.hardware.audio@4.0-impl-hisi-emui8",
+    defaults: ["android.hardware.audio-impl_hisi"],
+
+    shared_libs: [
+        "android.hardware.audio@4.0",
+        "android.hardware.audio@4.0-util",
+        "android.hardware.audio.common@4.0",
+        "android.hardware.audio.common@4.0-util",
+        "libcutils",
+    ],
+    cflags: [
+        "-DMAJOR_VERSION=4",
+        "-DMINOR_VERSION=0",
+        "-DEMUI_VERSION=8",
+        "-include common/all-versions/VersionMacro.h",
+    ],
+}
 
 cc_library_shared {
     name: "android.hardware.audio@4.0-impl-hisi",

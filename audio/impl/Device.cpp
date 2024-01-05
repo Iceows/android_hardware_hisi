@@ -98,7 +98,7 @@ Return<Result> Device::setMasterVolume(float volume) {
 Return<void> Device::getMasterVolume(getMasterVolume_cb _hidl_cb) {
     Result retval(Result::NOT_SUPPORTED);
     float volume = 0;
-    
+
     ALOGI("%s Enter", __func__);
     if (mDevice->get_master_volume != NULL) {
         retval = analyzeStatus("get_master_volume", mDevice->get_master_volume(mDevice, &volume),
@@ -134,7 +134,7 @@ Return<Result> Device::setMasterMute(bool mute) {
 Return<void> Device::getMasterMute(getMasterMute_cb _hidl_cb) {
     Result retval(Result::NOT_SUPPORTED);
     bool mute = false;
-    
+
     ALOGI("%s Enter", __func__);
     if (mDevice->get_master_mute != NULL) {
         retval = analyzeStatus("get_master_mute", mDevice->get_master_mute(mDevice, &mute),
@@ -374,14 +374,14 @@ std::tuple<Result, AudioPatchHandle> Device::createOrUpdateAudioPatch(
         AudioPatchHandle patch, const hidl_vec<AudioPortConfig>& sources,
         const hidl_vec<AudioPortConfig>& sinks) {
     Result retval(Result::NOT_SUPPORTED);
-    
+
     ALOGI("%s Enter version : 0x%x", __func__,version() );
     if (version() >= AUDIO_DEVICE_API_VERSION_3_0) {
-    
+
         ALOGI("%s version >= 300 try to change audio port", __func__ );
-    
+
         audio_patch_handle_t halPatch = static_cast<audio_patch_handle_t>(patch);
-        
+
 	// Only for debug
 	int num_sources=sources.size();
 	for (int i = 0; i < num_sources ; i++)
@@ -399,38 +399,23 @@ std::tuple<Result, AudioPatchHandle> Device::createOrUpdateAudioPatch(
 		ALOGD("gain.ramp_duration_ms 0x%x", sources[i].gain.rampDurationMs);
 		if (sources[i].type == AudioPortType::DEVICE)
 		{
-		    ALOGD("device.hw_module %x", sources[i].ext.device.hwModule); 
-		    ALOGD("device.type %x", sources[i].ext.device.type);              
+		    ALOGD("device.hw_module %x", sources[i].ext.device.hwModule);
+		    ALOGD("device.type %x", sources[i].ext.device.type);
 		    //ALOGD("device.address %s", (char*)sources[i].ext.device.address);
 		}
 		else if (sources[i].type == AudioPortType::MIX)
 		{
-		    ALOGD("mix.hw_module %x", sources[i].ext.mix.hwModule); 
-		    ALOGD("mix.handle %x", sources[i].ext.mix.ioHandle); 
+		    ALOGD("mix.hw_module %x", sources[i].ext.mix.hwModule);
+		    ALOGD("mix.handle %x", sources[i].ext.mix.ioHandle);
 		    ALOGD("mix.usecase.stream %x", sources[i].ext.mix.useCase.stream);
 		    ALOGD("mix.usecase.source %x", sources[i].ext.mix.useCase.source);
 		}
+		else if (sources[i].type  == AudioPortType::SESSION)
+               {
+
+               }
 	}
-	
-        std::unique_ptr<audio_port_config[]> halSources;
-        if (status_t status = HidlUtils::audioPortConfigsToHal(sources, &halSources);
-            status != NO_ERROR) {
-            return {analyzeStatus("audioPortConfigsToHal;sources", status), patch};
-        }
-        
-        // Patch here
-        struct audio_port_config *sources_hal=&halSources[0];
-	for (int i = 0; i < num_sources ; i++)
-	{
-		ALOGD("== source after [%d]/[%d] ==", i, num_sources );
-		if (sources_hal[i].type == AUDIO_PORT_TYPE_MIX)
-		{
-		    sources_hal[i].ext.mix.hw_module=sources_hal[i].ext.mix.handle;		// Patch here replace hw_module with handle value
-		    ALOGD("new mix.hw_module %x", sources_hal[i].ext.mix.hw_module);
-		    ALOGD("new mix.handle %x", sources_hal[i].ext.mix.handle);
-		}
-	}
-	
+
         int num_sinks=sinks.size();
         for (int i = 0; i < num_sinks ; i++)
 	{
@@ -448,29 +433,61 @@ std::tuple<Result, AudioPatchHandle> Device::createOrUpdateAudioPatch(
 
 		if (sinks[i].type == AudioPortType::DEVICE)
 		{
-		    ALOGD("device.hw_module %x", sinks[i].ext.device.hwModule);
-		    ALOGD("device.type %x", sinks[i].ext.device.type);
-		    //ALOGD("device.address %s", sinks[i].ext.device.address);
+			ALOGD("device.hw_module %x", sinks[i].ext.device.hwModule);
+			ALOGD("device.type %x", sinks[i].ext.device.type);
+			//ALOGD("device.address %s", sinks[i].ext.device.address);
 		}
 		else if (sinks[i].type  == AudioPortType::MIX)
 		{
-		    ALOGD("mix.hw_module %x", sinks[i].ext.mix.hwModule);
-		    ALOGD("mix.handle %x", sinks[i].ext.mix.ioHandle);
-		    ALOGD("mix.usecase.stream %x", sinks[i].ext.mix.useCase.stream);
-		    ALOGD("mix.usecase.source %x", sinks[i].ext.mix.useCase.source);
-		    
+			ALOGD("mix.hw_module %x", sinks[i].ext.mix.hwModule);
+			ALOGD("mix.handle %x", sinks[i].ext.mix.ioHandle);
+			ALOGD("mix.usecase.stream %x", sinks[i].ext.mix.useCase.stream);
+			ALOGD("mix.usecase.source %x", sinks[i].ext.mix.useCase.source);
 		}
 		else if (sinks[i].type  == AudioPortType::SESSION)
 		{
 
 		}
 	}
-        
+
+
+        std::unique_ptr<audio_port_config[]> halSources;
+        if (status_t status = HidlUtils::audioPortConfigsToHal(sources, &halSources);
+            status != NO_ERROR) {
+            return {analyzeStatus("audioPortConfigsToHal;sources", status), patch};
+        }
+
         std::unique_ptr<audio_port_config[]> halSinks;
         if (status_t status = HidlUtils::audioPortConfigsToHal(sinks, &halSinks);
             status != NO_ERROR) {
             return {analyzeStatus("audioPortConfigsToHal;sinks", status), patch};
         }
+
+        // Start of the patch for Huawei
+        struct audio_port_config *sources_hal=&halSources[0];
+        for (int i = 0; i < num_sources ; i++)
+        {
+            ALOGD("== source after [%d]/[%d] ==", i, num_sources );
+            if (sources_hal[i].type == AUDIO_PORT_TYPE_MIX)
+	    {
+	        sources_hal[i].ext.mix.hw_module=sources_hal[i].ext.mix.handle;		// Patch here replace hw_module with handle value
+	        ALOGD("new mix.hw_module %x", sources_hal[i].ext.mix.hw_module);
+	        ALOGD("new mix.handle %x", sources_hal[i].ext.mix.handle);
+	    }
+	}
+
+        struct audio_port_config *sinks_hal=&halSinks[0];
+        for (int i = 0; i < num_sinks ; i++)
+        {
+            ALOGD("== sink after [%d]/[%d] ==", i, num_sinks );
+            if (sinks_hal[i].type == AUDIO_PORT_TYPE_MIX)
+	    {
+	        sinks_hal[i].ext.mix.hw_module=sinks_hal[i].ext.mix.handle;		// Patch here replace hw_module with handle value
+	        ALOGD("new mix.hw_module %x", sinks_hal[i].ext.mix.hw_module);
+	        ALOGD("new mix.handle %x", sinks_hal[i].ext.mix.handle);
+	    }
+	}
+
         retval = analyzeStatus("create_audio_patch",
                                mDevice->create_audio_patch(mDevice, sources.size(), &halSources[0],
                                                            sinks.size(), &halSinks[0], &halPatch));
@@ -495,14 +512,14 @@ Return<void> Device::getAudioPortImpl(const AudioPort& port, getAudioPort_cb _hi
                                       int (*halGetter)(audio_hw_device_t*, HalPort*),
                                       const char* halGetterName) {
     HalPort halPort;
-    
+
     ALOGI("%s Enter", __func__);
-    
+
     if (halGetter == nullptr) {
         _hidl_cb(Result::NOT_SUPPORTED, port);
         return Void();
     }
-    
+
     if (status_t status = HidlUtils::audioPortToHal(port, &halPort); status != NO_ERROR) {
         _hidl_cb(analyzeStatus("audioPortToHal", status), port);
         return Void();
@@ -522,13 +539,13 @@ Return<void> Device::getAudioPortImpl(const AudioPort& port, getAudioPort_cb _hi
 
 #if MAJOR_VERSION <= 6
 Return<void> Device::getAudioPort(const AudioPort& port, getAudioPort_cb _hidl_cb) {
-    
+
     ALOGI("%s Enter", __func__);
     return getAudioPortImpl(port, _hidl_cb, mDevice->get_audio_port, "get_audio_port");
 }
 #else
 Return<void> Device::getAudioPort(const AudioPort& port, getAudioPort_cb _hidl_cb) {
-    
+
     ALOGI("%s Enter", __func__);
     if (version() >= AUDIO_DEVICE_API_VERSION_3_2) {
         // get_audio_port_v7 is mandatory if legacy HAL support this API version.
