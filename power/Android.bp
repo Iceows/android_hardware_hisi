@@ -1,0 +1,39 @@
+//
+// Copyright (C) 2021-2022 The LineageOS Project
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+soong_namespace {
+    imports: [
+        "hardware/google/pixel",
+        "hardware/google/interfaces",
+    ],
+}
+
+cc_binary {
+    name: "android.hardware.power-service.hisi",
+    relative_install_path: "hw",
+    init_rc: ["android.hardware.power-service.hisi.rc"],
+    vintf_fragments: ["android.hardware.power-service.hisi.xml"],
+    srcs: [
+        "service.cpp",
+        "Power.cpp",
+        "PowerExt.cpp",
+        "PowerHintSession.cpp",
+        "PowerSessionManager.cpp",
+        "InteractionHandler.cpp",
+    ],
+    shared_libs: [
+        "android.hardware.power-V3-ndk",
+        "libbase",
+        "libcutils",
+        "liblog",
+        "libutils",
+        "libbinder_ndk",
+        "libperfmgr",
+        "libprocessgroup",
+        "pixel-power-ext-V1-ndk",
+    ],
+    vendor: true
+}
