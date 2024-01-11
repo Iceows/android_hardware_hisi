@@ -36,7 +36,7 @@
 enum {
     USECASE_INVALID = -1,
     /* Playback usecases */
-    
+
     AUDIO_USECASE_MAX
 };
 
@@ -47,7 +47,7 @@ struct audio_patch_record {
     audio_patch_handle_t handle;	   // My handle of this patch
     audio_patch_handle_t handle_hisi;    // The handle return by original hi6250 audio lib
     audio_usecase_t usecase;		   // Not use for the moment
-    struct audio_patch patch;		   // audio patch struct	
+    struct audio_patch patch;		   // audio patch struct
 };
 
 struct hisi_wrapper_audio_device {
@@ -66,15 +66,15 @@ static int adev_open_output_stream(struct audio_hw_device* dev, audio_io_handle_
     hisi_wrapper_audio_device* ctx = reinterpret_cast<hisi_wrapper_audio_device*>(dev);
     int status=0;
 
-	
+
     ALOGI("%s: enter: sample_rate(%d) channel_mask(%#x) format(%#x) devices(%#x) flags(%#x), address(%s)",
               __func__, config->sample_rate, config->channel_mask, config->format, devices, flags, address);
-			  	
+
 
     status = ctx->hisi_device->open_output_stream(ctx->hisi_device, handle, devices, flags, config,
                                                 stream_out, address);
 
-   	
+
     return status;
 }
 
@@ -82,7 +82,7 @@ static void adev_close_output_stream(struct audio_hw_device* dev, struct audio_s
     hisi_wrapper_audio_device* ctx = reinterpret_cast<hisi_wrapper_audio_device*>(dev);
 
     ALOGI("enter function : %s", __func__);
-		
+
     return ctx->hisi_device->close_output_stream(ctx->hisi_device, stream);
 }
 
@@ -97,26 +97,26 @@ static int adev_set_parameters(struct audio_hw_device* dev, const char* kvpairs)
 static char* adev_get_parameters(const struct audio_hw_device* dev, const char* keys) {
     const hisi_wrapper_audio_device* ctx = reinterpret_cast<const hisi_wrapper_audio_device*>(dev);
 
-	
+
     ALOGI("enter function : %s", __func__);
     char* status=ctx->hisi_device->get_parameters(ctx->hisi_device, keys);
     ALOGI("exit function : %s : kvpairs: %s",  __func__, keys);
-	
-    return status;	
+
+    return status;
 }
 
 static int adev_init_check(const struct audio_hw_device* dev) {
     const hisi_wrapper_audio_device* ctx = reinterpret_cast<const hisi_wrapper_audio_device*>(dev);
     int status=0;
-	
+
     ALOGI("enter function : %s", __func__);
     status=ctx->hisi_device->init_check(ctx->hisi_device);
     ALOGI("pass step1 function : %s", __func__);
-	
+
 	//ctx->hisi_init_check(ctx->hisi_device);
     ALOGI("exit function : %s", __func__);
-	
-    return status;	
+
+    return status;
 }
 
 static int adev_set_voice_volume(struct audio_hw_device* dev, float volume) {
@@ -139,7 +139,7 @@ static int adev_get_master_volume(struct audio_hw_device* dev, float* volume) {
     hisi_wrapper_audio_device* ctx = reinterpret_cast<hisi_wrapper_audio_device*>(dev);
 
 	ALOGI("enter function : %s", __func__);
-		
+
     return ctx->hisi_device->get_master_volume(ctx->hisi_device, volume);
 }
 
@@ -147,7 +147,7 @@ static int adev_set_master_mute(struct audio_hw_device* dev, bool muted) {
     hisi_wrapper_audio_device* ctx = reinterpret_cast<hisi_wrapper_audio_device*>(dev);
 
 	ALOGI("enter function : %s", __func__);
-		
+
     return ctx->hisi_device->set_master_mute(ctx->hisi_device, muted);
 }
 
@@ -158,13 +158,13 @@ static int adev_get_master_mute(struct audio_hw_device* dev, bool* muted) {
 
 	ALOGI("enter function : %s", __func__);
 
-	pthread_mutex_lock(&ctx->lock);	
+	pthread_mutex_lock(&ctx->lock);
     status=ctx->hisi_device->get_master_mute(ctx->hisi_device, &master_mute);
-	pthread_mutex_unlock(&ctx->lock);	
-	
+	pthread_mutex_unlock(&ctx->lock);
+
     ALOGD("%s: %i", __func__, master_mute);
 
-	
+
 	return status;
 }
 
@@ -197,7 +197,7 @@ static size_t adev_get_input_buffer_size(const struct audio_hw_device* dev,
     const hisi_wrapper_audio_device* ctx = reinterpret_cast<const hisi_wrapper_audio_device*>(dev);
 
 	ALOGI("enter function : %s", __func__);
-		
+
     return ctx->hisi_device->get_input_buffer_size(ctx->hisi_device, config);
 }
 
@@ -208,7 +208,7 @@ static int adev_open_input_stream(struct audio_hw_device* dev, audio_io_handle_t
     hisi_wrapper_audio_device* ctx = reinterpret_cast<hisi_wrapper_audio_device*>(dev);
 
 	ALOGI("enter function : %s", __func__);
-		
+
     return ctx->hisi_device->open_input_stream(ctx->hisi_device, handle, devices, config, stream_in,
                                                flags, address, source);
 }
@@ -217,7 +217,7 @@ static void adev_close_input_stream(struct audio_hw_device* dev, struct audio_st
     hisi_wrapper_audio_device* ctx = reinterpret_cast<hisi_wrapper_audio_device*>(dev);
 
 	ALOGI("enter function : %s", __func__);
-		
+
     return ctx->hisi_device->close_input_stream(ctx->hisi_device, in);
 }
 
@@ -233,39 +233,32 @@ static int adev_close(hw_device_t* device) {
     hisi_wrapper_audio_device* ctx = reinterpret_cast<hisi_wrapper_audio_device*>(device);
 
 	ALOGI("enter function : %s", __func__);
-		
+
     if (!ctx) {
         return 0;
     }
 
     // Close the HiSilicon audio device
     ctx->hisi_device->common.close((struct hw_device_t*)ctx->hisi_device);
-	
 
-    // TODO clear list 
+
+    // TODO clear list
     free(ctx);
 
     return 0;
 }
-                     
-                                
-static int adev_get_microphones(const struct audio_hw_device *dev,
-                           struct audio_microphone_characteristic_t *mic_array,
-                           size_t *mic_count)
-{
-   //const hisi_wrapper_audio_device* ctx = reinterpret_cast<const hisi_wrapper_audio_device*>(dev);
 
-    ALOGI("enter function : %s", __func__);
-    
-    if (mic_count == NULL) {
-        return -ENOSYS;
+
+static int adev_get_microphones(const struct audio_hw_device* dev,
+                                struct audio_microphone_characteristic_t* mic_array,
+                                size_t* mic_count) {
+    if ((mic_array == NULL) || (mic_count == NULL)) {
+        return -EINVAL;
     }
+
     if (*mic_count == 0) {
         *mic_count = 1;
         return 0;
-    }
-    if (mic_array == NULL) {
-        return -ENOSYS;
     }
 
     return -ENOSYS;
@@ -275,8 +268,7 @@ static int adev_get_microphones(const struct audio_hw_device *dev,
 * Routing control - API 3.0 and supp
 */
 
-const char *strAudioPatchRole[] = {"AUDIO_PORT_ROLE_NONE", "AUDIO_PORT_ROLE_SOURCE", "AUDIO_PORT_ROLE_SINK"};
-const char *strAudioPatchType[] = {"AUDIO_PORT_TYPE_NONE", "AUDIO_PORT_TYPE_DEVICE", "AUDIO_PORT_TYPE_MIX", "AUDIO_PORT_TYPE_SESSION"};
+
 
 static struct audio_patch_record *get_patch_from_list(struct audio_device *dev,
                                                     audio_patch_handle_t patch_id)
@@ -284,8 +276,8 @@ static struct audio_patch_record *get_patch_from_list(struct audio_device *dev,
     struct audio_patch_record *patch;
     struct listnode *node;
     hisi_wrapper_audio_device* ctx = reinterpret_cast<hisi_wrapper_audio_device*>(dev);
-    
-    
+
+
     list_for_each(node, &ctx->audio_patch_record_list) {
         patch = node_to_item(node, struct audio_patch_record, list);
         if (patch->handle == patch_id)
@@ -295,48 +287,16 @@ static struct audio_patch_record *get_patch_from_list(struct audio_device *dev,
 }
 
 
-static int adev_create_audio_patch(struct audio_hw_device *dev,
+const char *strAudioPatchRole[] = {"AUDIO_PORT_ROLE_NONE", "AUDIO_PORT_ROLE_SOURCE", "AUDIO_PORT_ROLE_SINK"};
+const char *strAudioPatchType[] = {"AUDIO_PORT_TYPE_NONE", "AUDIO_PORT_TYPE_DEVICE", "AUDIO_PORT_TYPE_MIX", "AUDIO_PORT_TYPE_SESSION"};
+
+static void debug_patch(
         unsigned int num_sources,
         const struct audio_port_config *sources,
         unsigned int num_sinks,
-        const struct audio_port_config *sinks,
-        audio_patch_handle_t *handle) {
-    hisi_wrapper_audio_device* ctx = reinterpret_cast<hisi_wrapper_audio_device*>(dev);
+        const struct audio_port_config *sinks)
+{
     int i=0;
-    int status=0;
-    struct audio_patch_record *patch_record = NULL;
-    audio_patch_handle_t handle_wrapper  = AUDIO_PATCH_HANDLE_NONE;
-    audio_patch_handle_t handle_hisi  = AUDIO_PATCH_HANDLE_NONE;
-    
-    ALOGI("enter function : %s - handle=%d - numsources=%d - numsink=%d", __func__, *handle, num_sources, num_sinks);
-
-     if (!ctx) {
-        return 0;
-    }
-
-    if (num_sources != 1 || num_sinks == 0 || num_sinks > AUDIO_PATCH_PORTS_MAX) {
-        // Only accept mix->device and device->mix cases. In that case, the number of sources
-        // must be 1. The number of sinks must be in the range of (0, AUDIO_PATCH_PORTS_MAX].
-        return -EINVAL;
-    }
-
-    if (sources[0].type == AUDIO_PORT_TYPE_DEVICE) {
-        // If source is a device, the number of sinks should be 1.
-        if (num_sinks != 1 || sinks[0].type != AUDIO_PORT_TYPE_MIX) {
-            return -EINVAL;
-        }
-    } else if (sources[0].type == AUDIO_PORT_TYPE_MIX) {
-        // If source is a mix, all sinks should be device.
-        for (unsigned int i = 0; i < num_sinks; i++) {
-            if (sinks[i].type != AUDIO_PORT_TYPE_DEVICE) {
-                ALOGE("%s() invalid sink type %#x for mix source", __func__, sinks[i].type);
-                return -EINVAL;
-            }
-        }
-    } else {
-        // All other cases are invalid.
-        return -EINVAL;
-    }
 
     // Only for debug
     for (i = 0; i < num_sources ; i++)
@@ -393,14 +353,14 @@ static int adev_create_audio_patch(struct audio_hw_device *dev,
         }
         else if (sinks[i].type == AUDIO_PORT_TYPE_MIX)
         {
-        
-            //audio_module_handle_t srcModule = sinks[i].ext.mix.hw_module; 
-        
+
+            //audio_module_handle_t srcModule = sinks[i].ext.mix.hw_module;
+
             ALOGD("mix.hw_module %x", sinks[i].ext.mix.hw_module);         // TODO Change the hw_module with original
             ALOGD("mix.handle %x", sinks[i].ext.mix.handle);		      // TODO Change the handle with original
             ALOGD("mix.usecase.stream %x", sinks[i].ext.mix.usecase.stream);
             ALOGD("mix.usecase.source %x", sinks[i].ext.mix.usecase.source);
-            
+
         }
         else if (sinks[i].type == AUDIO_PORT_TYPE_SESSION)
         {
@@ -408,7 +368,53 @@ static int adev_create_audio_patch(struct audio_hw_device *dev,
         }
     }
 
-    ALOGD("-%s num_sources [%d] , num_sinks [%d]", __FUNCTION__, num_sources, num_sinks);
+}
+
+static int adev_create_audio_patch(struct audio_hw_device *dev,
+        unsigned int num_sources,
+        const struct audio_port_config *sources,
+        unsigned int num_sinks,
+        const struct audio_port_config *sinks,
+        audio_patch_handle_t *handle) {
+    hisi_wrapper_audio_device* ctx = reinterpret_cast<hisi_wrapper_audio_device*>(dev);
+    int status=0;
+    struct audio_patch_record *patch_record = NULL;
+    audio_patch_handle_t handle_wrapper  = AUDIO_PATCH_HANDLE_NONE;
+    audio_patch_handle_t handle_hisi  = AUDIO_PATCH_HANDLE_NONE;
+
+    ALOGI("enter function : %s - handle=%d - numsources=%d - numsink=%d", __func__, *handle, num_sources, num_sinks);
+
+     if (!ctx) {
+        return 0;
+    }
+
+    if (num_sources != 1 || num_sinks == 0 || num_sinks > AUDIO_PATCH_PORTS_MAX) {
+        // Only accept mix->device and device->mix cases. In that case, the number of sources
+        // must be 1. The number of sinks must be in the range of (0, AUDIO_PATCH_PORTS_MAX].
+        return -EINVAL;
+    }
+
+    if (sources[0].type == AUDIO_PORT_TYPE_DEVICE) {
+        // If source is a device, the number of sinks should be 1.
+        if (num_sinks != 1 || sinks[0].type != AUDIO_PORT_TYPE_MIX) {
+            return -EINVAL;
+        }
+    } else if (sources[0].type == AUDIO_PORT_TYPE_MIX) {
+        // If source is a mix, all sinks should be device.
+        for (unsigned int i = 0; i < num_sinks; i++) {
+            if (sinks[i].type != AUDIO_PORT_TYPE_DEVICE) {
+                ALOGE("%s() invalid sink type %#x for mix source", __func__, sinks[i].type);
+                return -EINVAL;
+            }
+        }
+    } else {
+        // All other cases are invalid.
+        return -EINVAL;
+    }
+
+    ALOGD("%s - before num_sources [%d] , num_sinks [%d]", __FUNCTION__, num_sources, num_sinks);
+    //debug_patch(num_sources,sources,num_sinks,sinks);
+
 
     // Only handle patches for mix->devices and device->mix case.
     if (sources[0].type == AUDIO_PORT_TYPE_DEVICE) {
@@ -421,7 +427,7 @@ static int adev_create_audio_patch(struct audio_hw_device *dev,
 
 		/* patch created success, add to patch record list */
 		patch_record = (struct audio_patch_record *)calloc(1,sizeof(struct audio_patch_record));
-			
+
 		if (!patch_record) {
 			ALOGE("%s fail to allocate patch_record", __func__);
 			status = -ENOMEM;
@@ -431,12 +437,12 @@ static int adev_create_audio_patch(struct audio_hw_device *dev,
 
 		pthread_mutex_lock(&ctx->lock);
 		handle_wrapper = ++ctx->next_patch_handle;
-		
+
 		patch_record->handle = handle_wrapper;
 		patch_record->handle_hisi =  AUDIO_PATCH_HANDLE_NONE;
 		patch_record->patch.id = handle_wrapper;
 		patch_record->usecase = USECASE_INVALID;
-		
+
 		// Store sources and sinks value
 		patch_record->patch.num_sources = num_sources;
 		patch_record->patch.num_sinks = num_sinks;
@@ -446,47 +452,59 @@ static int adev_create_audio_patch(struct audio_hw_device *dev,
 			patch_record->patch.sinks[i] = sinks[i];
 
 		ALOGD("%s - call create_audio_patch", __FUNCTION__);
-		
-	  			
-		// TODO change the for by correct value
-		// If you have already get the handle, start with the new handle
-		// Try only the 16 first values
-		for (int hw_module = ctx->hw_module; hw_module < 0x10; hw_module++) {
 
-
-			// replace hw_module by my current value
-			for (int i = 0; i < num_sources; i++)
-				patch_record->patch.sources[i].ext.mix.hw_module=hw_module;
-
-			ALOGD("%s - try create_audio_patch sucess with %d handle", __FUNCTION__, hw_module);
-			status=ctx->hisi_device->create_audio_patch(ctx->hisi_device, 
-				patch_record->patch.num_sources, 
-				patch_record->patch.sources, 
-				patch_record->patch.num_sinks, 
-				patch_record->patch.sinks, 
-				&handle_hisi);
-
-	
-			if (status==0) {
-				ALOGD("%s - call create_audio_patch sucess - new hw module id is %d", __FUNCTION__, hw_module);
-				patch_record->handle_hisi = handle_hisi;
-				ctx->hw_module = hw_module;
-				break;
+		// replace hw_module by my current value
+		for (int i = 0; i < num_sources; i++) {
+			if (patch_record->patch.sources[i].type == AUDIO_PORT_TYPE_MIX) {
+				patch_record->patch.sources[i].ext.mix.hw_module=patch_record->patch.sources[i].ext.mix.handle;
+				ALOGD("%s - change source hw_module with handle(%d) ", __FUNCTION__, patch_record->patch.sources[i].ext.mix.hw_module);
 			}
-			else {
-				patch_record->handle_hisi = AUDIO_PATCH_HANDLE_NONE;
-				ALOGD("%s - call create_audio_patch error %i", __FUNCTION__,status);
+			if (patch_record->patch.sources[i].type == AUDIO_PORT_TYPE_DEVICE) {
+				patch_record->patch.sources[i].ext.device.hw_module=patch_record->patch.sources[i].ext.device.type;
 			}
 		}
+
+		for (int i = 0; i < num_sinks; i++) {
+			if (patch_record->patch.sinks[i].type == AUDIO_PORT_TYPE_MIX) {
+				patch_record->patch.sinks[i].ext.mix.hw_module=patch_record->patch.sinks[i].ext.mix.handle;
+				ALOGD("%s - change sink hw_module with handle(%d) ", __FUNCTION__, patch_record->patch.sinks[i].ext.mix.hw_module);
+			}
+
+			if (patch_record->patch.sinks[i].type == AUDIO_PORT_TYPE_DEVICE) {
+				patch_record->patch.sinks[i].ext.device.hw_module=patch_record->patch.sinks[i].ext.device.type;
+			}
+		}
+
+		ALOGD("%s - after num_sources [%d] , num_sinks [%d]", __FUNCTION__, num_sources, num_sinks);
+		//debug_patch(patch_record->patch.num_sources,patch_record->patch.sources,patch_record->patch.num_sinks,patch_record->patch.sinks);
+
+		status=ctx->hisi_device->create_audio_patch(ctx->hisi_device,
+			patch_record->patch.num_sources,
+			patch_record->patch.sources,
+			patch_record->patch.num_sinks,
+			patch_record->patch.sinks,
+			&handle_hisi);
+
+
+		if (status==0) {
+			ALOGD("%s - call create_audio_patch sucess", __FUNCTION__);
+			patch_record->handle_hisi = handle_hisi;
+			ctx->hw_module = 0;
+		}
+		else {
+			patch_record->handle_hisi = AUDIO_PATCH_HANDLE_NONE;
+			ALOGD("%s - call create_audio_patch error %i", __FUNCTION__,status);
+		}
+
 
 		ALOGD("%s - try to add new patch with handle 0x%x", __FUNCTION__, handle_wrapper);
 		list_add_tail(&ctx->audio_patch_record_list, &patch_record->list);
 		pthread_mutex_unlock(&ctx->lock);
 		ALOGD("handlecheck %s sucess new *handle 0x%x", __FUNCTION__, handle_wrapper);
-		
+
 		// Now my patch handler
 		*handle=handle_wrapper;
-   
+
 		status=0;
 	}
 	else {
@@ -503,13 +521,14 @@ exit:
     return status;
 }
 
+
 static int adev_release_audio_patch(struct audio_hw_device *dev,
         audio_patch_handle_t handle) {
     hisi_wrapper_audio_device* ctx = reinterpret_cast<hisi_wrapper_audio_device*>(dev);
     struct audio_device *adev = (struct audio_device *)dev;
     struct audio_patch_record *patch_record = NULL;
     int status = 0;
-    
+
     ALOGI("enter function : %s", __func__);
 
     if (!ctx) {
@@ -522,12 +541,12 @@ static int adev_release_audio_patch(struct audio_hw_device *dev,
         status = -EINVAL;
         return status;
     }
-    
+
     /* get the patch record from handle */
     pthread_mutex_lock(&ctx->lock);
     patch_record = get_patch_from_list(adev, handle);
-    pthread_mutex_unlock(&ctx->lock);    
-    
+    pthread_mutex_unlock(&ctx->lock);
+
     if(!patch_record) {
         ALOGE("%s: failed to find the patch record with handle (%d) in the list",
                 __func__, handle);
@@ -536,7 +555,7 @@ static int adev_release_audio_patch(struct audio_hw_device *dev,
     }
 	else {
 		// release hisi audio patch also
-		status=ctx->hisi_device->release_audio_patch(ctx->hisi_device,  patch_record->handle_hisi);	
+		status=ctx->hisi_device->release_audio_patch(ctx->hisi_device,  patch_record->handle_hisi);
 	}
 
 
@@ -606,8 +625,8 @@ static int adev_open(const hw_module_t* module, const char* name, hw_device_t** 
     list_init(&adev->audio_patch_record_list);
     adev->next_patch_handle = AUDIO_PATCH_HANDLE_NONE;
     adev->hw_module = 1;
-	
-	
+
+
     // Get the HiSilicon audio module
     rc = hw_get_module_by_class(AUDIO_HARDWARE_MODULE_ID, "primary_hisi",
                                 (const hw_module_t**)&hisi_module);
@@ -619,7 +638,7 @@ static int adev_open(const hw_module_t* module, const char* name, hw_device_t** 
 
     ALOGI("HISI Module : id=%s name=%s author=%s versionmajor=%04x versionminor=%04x",hisi_module->id,hisi_module->name,hisi_module->author,hisi_module->version_major,hisi_module->version_minor);
 
-	
+
     // Open it
     rc = hisi_module->methods->open(hisi_module, name, (struct hw_device_t**)&adev->hisi_device);
     // 	rc = audio_hw_device_open(hisi_module, (struct hw_device_t**)&adev->hisi_device);
@@ -627,12 +646,12 @@ static int adev_open(const hw_module_t* module, const char* name, hw_device_t** 
         ALOGE("Could not open hisi audio hw device");
         free(adev);
         return rc;
-    } 
-	
+    }
+
     struct audio_hw_device *audiohw=(struct audio_hw_device *)adev->hisi_device;
     ALOGI("HISI Device API Version : %x - rc %d", audiohw->common.version, rc);
 
-	
+
     /* default audio HAL major version */
     uint32_t maj_version = 3;
     uint32_t min_version = 0;
@@ -642,7 +661,7 @@ static int adev_open(const hw_module_t* module, const char* name, hw_device_t** 
     adev->device.common.module = (struct hw_module_t *)module;
     adev->device.common.close = adev_close;
 
-    ALOGI("OSS Audio device API Version %04x ", adev->device.common.version);	
+    ALOGI("OSS Audio device API Version %04x ", adev->device.common.version);
 
     adev->device.init_check = adev_init_check;
     adev->device.set_voice_volume = adev_set_voice_volume;
@@ -672,11 +691,11 @@ static int adev_open(const hw_module_t* module, const char* name, hw_device_t** 
     //adev->hw_device.add_device_effect
     //adev->hw_device.remove_device_effect
     //adev->hw_device.set_device_connected_state_v7
-	
-	
+
+
     *device = &adev->device.common;
 
-	
+
     return 0;
 }
 
