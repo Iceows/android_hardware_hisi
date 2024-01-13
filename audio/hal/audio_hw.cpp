@@ -413,7 +413,7 @@ static int adev_create_audio_patch(struct audio_hw_device *dev,
     }
 
     ALOGD("%s - before num_sources [%d] , num_sinks [%d]", __FUNCTION__, num_sources, num_sinks);
-    //debug_patch(num_sources,sources,num_sinks,sinks);
+    debug_patch(num_sources,sources,num_sinks,sinks);
 
 
     // Only handle patches for mix->devices and device->mix case.
