@@ -9,6 +9,15 @@ using android::status_t;
 
 extern "C" {
 
+
+extern "C" void _ZN7android13GraphicBuffer4lockEjPPvPiS3_(void* thisptr, uint32_t inUsage,
+        void** vaddr, int32_t* outBytesPerPixel, int32_t* outBytesPerStride);
+
+extern "C" void _ZN7android13GraphicBuffer4lockEjPPv(void* thisptr, uint32_t inUsage,
+        void** vaddr) {
+    _ZN7android13GraphicBuffer4lockEjPPvPiS3_(thisptr, inUsage, vaddr, nullptr, nullptr);
+}
+
 #if defined(__LP64__)
 status_t _ZN7android19GraphicBufferMapper12importBufferEPK13native_handlejjjimjPS3_(
         void* thisptr, buffer_handle_t rawHandle, uint32_t width, uint32_t height,

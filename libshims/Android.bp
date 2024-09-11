@@ -26,6 +26,14 @@ cc_library_shared {
 }
 
 cc_library_shared {
+    name: "libshim_emcom",
+    shared_libs: [
+        "libcutils_shim",
+        "libtinyxml2_shim"
+    ],
+}
+
+cc_library_shared {
     name: "guivnd",
     shared_libs: [
         "libgui_vendor",
@@ -44,22 +52,4 @@ cc_library_shared {
         "libtinyxml2_shim"
     ],
     vendor: true,
-}
-
-cc_library_shared {
-    name: "libshim_emcom",
-    shared_libs: [
-        "libcutils_shim",
-        "libtinyxml2_shim"
-    ],
-}
-
-cc_library_shared {
-    name: "libshim_utils",
-    srcs: ["libshim_utils.cpp"],
-    vendor: true,
-    compile_multilib: "64",
-    shared_libs: [
-        "libutils",
-    ],
 }
