@@ -148,7 +148,7 @@ int main(void) {
             // 1 means closed; 0 means open
             ALOGI("Receive events data %f\n", sensorEvent.data[0]);
             
-            int isClosed = sensorEvent.data[0] > 0.0f ? 0 : 1;
+            int isClosed = sensorEvent.data[0] > 0.0f ? 1 : 0;
             struct input_event event;
             event.type = EV_SW;
             event.code = SW_LID;
