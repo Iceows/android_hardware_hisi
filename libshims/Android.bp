@@ -60,3 +60,14 @@ cc_library_shared {
         shared_libs: ["libbinder"],
         proprietary: true,
 }
+
+cc_library_shared {
+    name: "libshim_omx",
+    srcs: ["libshim_omx.cpp"],
+    shared_libs: [
+        "libui",
+        "libutils"
+    ],
+    vendor: true,
+}
+
